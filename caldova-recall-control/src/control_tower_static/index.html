@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Caldova Recall Control Tower</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Caldova Recall Control Tower">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span></span>
+      <span><strong>CALDOVA</strong><small>RECALL CONTROL TOWER</small></span>
+    </a>
+    <div class="runtime-cluster">
+      <span class="status-dot online"></span>
+      <span><strong id="runtime-mode">LOCAL</strong><small>MCP <span id="protocol">2026-07-28</span></small></span>
+      <span class="divider"></span>
+      <span class="router"><i data-lucide="route"></i><span><strong>MODEL ROUTER</strong><small id="model-name">caldova-model-router</small></span></span>
+    </div>
+    <button class="icon-button" id="reset-button" title="Reset demo" aria-label="Reset demo"><i data-lucide="rotate-ccw"></i></button>
+  </header>
+
+  <main>
+    <section class="incident-band" aria-labelledby="incident-title">
+      <div class="incident-kicker"><span>ACTIVE RECALL</span><span class="fictional">FICTIONAL SCENARIO</span></div>
+      <div class="incident-main">
+        <div>
+          <h1 id="incident-title">Loading incident...</h1>
+          <p id="incident-reason">Connecting to recall operations</p>
+        </div>
+        <div class="incident-meta">
+          <div><small>BATCH</small><strong id="batch-id">--</strong></div>
+          <div><small>SUPPLIER</small><strong id="supplier-name">--</strong></div>
+          <div><small>SEVERITY</small><strong class="severity"><span></span><span id="risk-tier">--</span></strong></div>
+          <div><small>STATUS</small><strong id="incident-status">ASSESSMENT</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="command-strip" aria-label="Recall exposure summary">
+      <div class="metric critical"><small>AFFECTED UNITS</small><strong id="total-units">--</strong><span>across network</span></div>
+      <div class="metric"><small>LOCATIONS</small><strong id="location-count">--</strong><span>require action</span></div>
+      <div class="metric"><small>SUPPLIER</small><strong id="supplier-state">--</strong><span id="replacement-eta">replacement status</span></div>
+      <div class="command-actions">
+        <button class="button secondary" id="analysis-button"><i data-lucide="play"></i>Run analysis</button>
+        <button class="button danger" id="approval-button" disabled><i data-lucide="shield-check"></i>Approve quarantine</button>
+      </div>
+    </section>
+
+    <div class="workspace-grid">
+      <section class="workspace-main">
+        <div class="section-heading">
+          <div><small>NETWORK EXPOSURE</small><h2>Affected inventory</h2></div>
+          <span class="sync-state"><i data-lucide="radio"></i>LIVE STATE</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Location</th><th>Type</th><th class="number">Units</th><th>Status</th></tr></thead>
+            <tbody id="inventory-body"><tr><td colspan="4" class="empty">Loading inventory...</td></tr></tbody>
+          </table>
+        </div>
+
+        <div class="section-heading workflow-heading">
+          <div><small>ORCHESTRATION</small><h2>Decision workflow</h2></div>
+          <span class="correlation" id="correlation-id">NO ACTIVE RUN</span>
+        </div>
+        <ol class="workflow" id="workflow-list"></ol>
+
+        <section class="brief" id="decision-brief" hidden>
+          <div class="brief-heading"><i data-lucide="clipboard-check"></i><div><small>SUPERVISOR OUTPUT</small><h2>Decision brief</h2></div></div>
+          <div class="brief-grid">
+            <div><small>FACTS</small><p id="brief-facts"></p></div>
+            <div><small>RECOMMENDATION</small><p id="brief-recommendation"></p></div>
+            <div><small>UNCERTAINTY</small><p id="brief-uncertainty"></p></div>
+            <div class="human-action"><small>REQUIRED HUMAN ACTION</small><p id="brief-action"></p></div>
+          </div>
+        </section>
+      </section>
+
+      <aside class="operations-rail">
+        <section class="rail-section">
+          <div class="section-heading compact"><div><small>MCP ACTIVITY</small><h2>Tool calls</h2></div><span id="call-count">0</span></div>
+          <div class="activity-list" id="activity-list"><p class="empty">No tool calls in this run.</p></div>
+        </section>
+        <section class="rail-section audit-section">
+          <div class="section-heading compact"><div><small>CONTROL EVIDENCE</small><h2>Audit trail</h2></div><i data-lucide="lock-keyhole"></i></div>
+          <div class="audit-list" id="audit-list"><p class="empty">No control events recorded.</p></div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <dialog id="approval-dialog">
+    <form method="dialog" id="approval-form">
+      <div class="dialog-icon"><i data-lucide="shield-alert"></i></div>
+      <small>CONSEQUENTIAL ACTION</small>
+      <h2>Approve inventory quarantine</h2>
+      <p>This approval authorizes one batch-scoped mutation. Authority is validated below the model layer.</p>
+      <div class="mutation-box">
+        <span>PROPOSED MUTATION</span>
+        <strong>Quarantine <span id="dialog-units">2,196</span> units across <span id="dialog-locations">4</span> locations</strong>
+        <small>Batch <span id="dialog-batch">B-2408-AX7</span></small>
+      </div>
+      <label for="approver-name">Approver name and role</label>
+      <input id="approver-name" name="approver" minlength="3" maxlength="120" required placeholder="e.g. Asha Rao, Responsible Pharmacist" autocomplete="name">
+      <div class="dialog-actions">
+        <button class="button ghost" value="cancel" type="button" id="cancel-approval">Cancel</button>
+        <button class="button danger" value="approve" type="submit"><i data-lucide="shield-check"></i>Confirm approval</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>

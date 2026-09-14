@@ -1,0 +1,57 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+requiredVersions:
+    extensions:
+        azure.ai.agents: '>=1.0.0-beta.4'
+name: caldova-recall-control
+services:
+    ai-project:
+        host: azure.ai.project
+        deployments:
+            - name: caldova-model-router
+              model:
+                  format: OpenAI
+                  name: model-router
+                  version: '2025-11-18'
+              sku:
+                  name: GlobalStandard
+                  capacity: 10
+            - name: caldova-evaluator
+              model:
+                  format: OpenAI
+                  name: gpt-5.4-mini
+                  version: '2026-03-17'
+              sku:
+                  name: GlobalStandard
+                  capacity: 10
+    agent-framework-workflows-responses:
+        host: azure.ai.agent
+        metadata:
+            tags:
+                - Agent Framework
+                - AI Agent Hosting
+                - Azure AI AgentServer
+                - Responses Protocol
+                - Streaming
+        project: caldova-recall-control/src/agent-framework-workflows-responses
+        language: docker
+        docker:
+            path: Dockerfile
+            remoteBuild: true
+        uses:
+            - ai-project
+        kind: hosted
+        name: agent-framework-workflows-responses
+        description: A Model Router-powered multi-agent workflow for pharmaceutical recall operations.
+        protocols:
+            - protocol: responses
+              version: 2.0.0
+        environmentVariables:
+            - name: AZURE_AI_MODEL_DEPLOYMENT_NAME
+              value: ${AZURE_AI_MODEL_DEPLOYMENT_NAME}
+        container:
+            resources:
+                cpu: '0.5'
+                memory: 1Gi
+infra:
+    provider: microsoft.foundry

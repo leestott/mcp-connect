@@ -1,0 +1,14 @@
+name: caldova-reference-adherence-v8
+agent:
+    name: agent-framework-workflows-responses
+    kind: hosted
+    version: "8"
+    config: .agent_configs\baseline\metadata.yaml
+dataset:
+    local_uri: ..\..\tests\golden.jsonl
+evaluators:
+    - name: caldova-reference-adherence
+    version: "2"
+options:
+    eval_model: caldova-evaluator
+max_samples: 15

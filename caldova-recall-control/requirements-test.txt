@@ -1,0 +1,21 @@
+# Reproducible test/build environment for CI and local validation.
+#
+# This intentionally installs agent-framework-foundry alongside mcp==2.1.0.
+# The Foundry *hosting* package is deliberately excluded here because it pins
+# mcp<2; hosting only runs inside the container image, while tests and the
+# MCP v2 bridge require the 2.1.0 protocol stack.
+
+agent-framework-foundry==1.11.0
+mcp==2.1.0
+
+# Control Tower API + local server (exercised by tests)
+fastapi==0.141.1
+httpx==0.28.1
+uvicorn==0.52.4
+
+# Test runner
+pytest==8.4.2
+pytest-asyncio==1.4.0
+
+# Presentation build
+python-pptx==1.0.2
