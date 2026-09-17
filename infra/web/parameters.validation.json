@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": { "value": "northcentralus" },
+    "webAppName": { "value": "caldova-web-ti3pdz737nyvg" },
+    "storageAccountName": { "value": "stcwti3pdz737nyvg" },
+    "authClientId": { "value": "00000000-0000-0000-0000-000000000000" },
+    "tenantId": { "value": "46946eec-4e27-4270-876d-953a3b711bf8" },
+    "allowedUserIds": { "value": ["d483e367-7969-4ad9-b0b6-0936c5a19c39"] },
+    "approverIds": { "value": ["d483e367-7969-4ad9-b0b6-0936c5a19c39"] },
+    "foundryAccountName": { "value": "ai-account-ti3pdz737nyvg" },
+    "foundryProjectName": { "value": "leestott-mcpconnect" },
+    "agentEndpoint": { "value": "https://replace.services.ai.azure.com/api/projects/replace/agents/replace/endpoint/protocols/openai/responses" },
+    "modelDeploymentName": { "value": "caldova-model-router" },
+    "planSku": { "value": "P0v4" }
+  }
+}

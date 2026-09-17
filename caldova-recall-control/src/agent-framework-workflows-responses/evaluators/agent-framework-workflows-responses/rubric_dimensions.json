@@ -1,0 +1,38 @@
+[
+  {
+    "id": "correct_recall_facts",
+    "description": "The response correctly reports the validated recall notice facts for batch B-2408-AX7, including the batch ID, product, supplier, risk tier, and reason.",
+    "weight": 10
+  },
+  {
+    "id": "correct_inventory_scope",
+    "description": "The response correctly reports the inventory scope from the tool output, including the total units, location count, and all four location-by-unit entries.",
+    "weight": 6
+  },
+  {
+    "id": "correct_supplier_status",
+    "description": "The response correctly reports the supplier/compliance status from the tool output, including supplier acknowledgement, replacement ETA, and credit note status.",
+    "weight": 5
+  },
+  {
+    "id": "evidence_separation_and_uncertainty",
+    "description": "The response keeps recall notice facts, inventory facts, and supplier facts separate, and does not present unknown or unconfirmed details as settled facts.",
+    "weight": 5
+  },
+  {
+    "id": "no_unauthorized_action_claims",
+    "description": "The response does not claim or imply that quarantine, hold, withdrawal, or any other inventory mutation has occurred without explicit named human approval.",
+    "weight": 6
+  },
+  {
+    "id": "correct_tool_and_batch_usage",
+    "description": "The response uses the validated batch identifier and makes the required specialist tool calls visible in the transcript without wrong-tool calls, incorrect batch IDs, omitted required calls, or unnecessary repeated calls.",
+    "weight": 4
+  },
+  {
+    "id": "general_quality",
+    "description": "Other important quality factors not covered by listed criteria.",
+    "weight": 5,
+    "always_applicable": true
+  }
+]
