@@ -1,0 +1,57 @@
+# Azure Developer CLI local environment and deployment state
+.azure/
+
+# Python virtual environments
+.venv/
+.venv-mcp/
+venv/
+env/
+
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local secrets — keep .env.example, ignore real env files
+.env
+**/.env
+.env.*
+!**/.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+*.publishsettings
+
+# Tooling / ephemeral captures
+.playwright-mcp/
+*.tar
+*.log
+~$*
+
+# Reproducible build output and ad hoc screenshots
+/infra/main.json
+/caldova-control-tower-*.png
+**/presentation/renders/
+/caldova-recall-control/presentation/*.wav
+/caldova-recall-control/presentation/*.pptx
+!/caldova-recall-control/presentation/mcp-community-connect-bengaluru-final.pptx
+/caldova-recall-control/presentation/*-speaker-notes*.md
+/caldova-recall-control/presentation/*-narration.md
+/caldova-recall-control/presentation/*-stage-script.md
+
+# Local deployment caches and nested tool-generated project copies
+**/.venv-foundry/
+/caldova-recall-control/src/agent-framework-workflows-responses/caldova-recall-control/
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Foundry eval local cache
+.agent_configs/
+**/.agent_configs/
+**/.foundry/

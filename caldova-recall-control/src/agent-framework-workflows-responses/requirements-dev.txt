@@ -1,0 +1,4 @@
+-r requirements.txt
+
+# Local debugging with the Foundry Toolkit VS Code extension.
+debugpy

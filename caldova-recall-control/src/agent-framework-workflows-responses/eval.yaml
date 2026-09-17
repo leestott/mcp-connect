@@ -1,0 +1,16 @@
+name: agent-framework-workflows-responses
+agent:
+    name: agent-framework-workflows-responses
+    kind: hosted
+    version: "1"
+    config: .agent_configs\baseline\metadata.yaml
+dataset_reference:
+    local_uri: ../../tests/golden.jsonl
+evaluators:
+    - name: agent-framework-workflows-responses
+      version: "5"
+      local_uri: evaluators\agent-framework-workflows-responses\rubric_dimensions.json
+options:
+    eval_model: caldova-evaluator
+max_samples: 50
+trace_days: 7

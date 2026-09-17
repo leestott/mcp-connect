@@ -1,0 +1,47 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Caldova Agent with Inspector",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": {
+        "host": "localhost",
+        "port": 5679
+      },
+      "preLaunchTask": "Open Caldova Agent Inspector",
+      "internalConsoleOptions": "neverOpen",
+      "postDebugTask": "Terminate Caldova Agent Tasks"
+    },
+    {
+      "name": "Debug Caldova Agent Server",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": {
+        "host": "localhost",
+        "port": 5679
+      },
+      "preLaunchTask": "Run Caldova Agent HTTP Server",
+      "internalConsoleOptions": "neverOpen",
+      "postDebugTask": "Terminate Caldova Agent Tasks"
+    },
+    {
+      "name": "Debug Caldova Control Tower",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "control_tower_api:app",
+        "--app-dir",
+        "src",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8091"
+      ],
+      "cwd": "${workspaceFolder}/caldova-recall-control",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ]
+}
