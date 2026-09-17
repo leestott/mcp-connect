@@ -4,6 +4,73 @@ A developer demonstration of MCP tool contracts, approval policy, idempotent inv
 
 > Fictional scenario. Synthetic operational data. Recall batch `B-2408-AX7`, 2,196 units across four locations.
 
+## From MCP prototype to reliable agent system
+
+MCP is quickly becoming the standard way for AI agents to interact with tools, APIs, and external systems. Connecting a model to a tool is the easy part. The harder engineering begins when agents must make decisions, coordinate workflows, recover from failures, and operate reliably in production environments.
+
+Caldova is a demo-driven reference solution for those challenges. It combines Microsoft Agent Framework, Microsoft Foundry, and MCP to show how specialized agents can gather evidence and collaborate while deterministic application code retains authority over consequential actions. The emphasis is on software engineering rather than prompts alone: narrow tool contracts, explicit orchestration, request isolation, bounded failures, authenticated approval, optimistic concurrency, audit evidence, and idempotent mutation.
+
+The sample also provides a practical basis for comparing orchestration choices. It implements a fixed sequential workflow because the recall stages have clear dependencies. The final supervisor synthesizes evidence but does not dynamically route agents. Supervisor routing is useful when work cannot be ordered in advance, but it introduces additional control-flow, observability, and evaluation requirements that this workflow deliberately avoids.
+
+## Final application
+
+![Caldova Recall Control Tower after an authorized quarantine, showing 2,196 units quarantined across four locations, the completed workflow, MCP activity, and audit evidence](caldova-recall-control/presentation/assets/control-tower-quarantined.png)
+
+*The final local demo state after human approval and idempotent quarantine. All people, organizations, products, and operational data shown by the scenario are fictional or synthetic.*
+
+## Application architecture
+
+```mermaid
+flowchart TB
+	Operator[Authenticated operator] --> Web[Azure App Service<br/>FastAPI and Control Tower]
+	EasyAuth[Microsoft Entra EasyAuth] --> Web
+
+	subgraph Reasoning[Read-only reasoning path]
+		Web -->|Responses protocol| Hosted[Microsoft Foundry Hosted Agent]
+		Hosted --> Triage[Recall triage]
+		Triage --> Inventory[Inventory impact]
+		Inventory --> Compliance[Supplier and compliance]
+		Compliance --> Supervisor[Tool-free supervisor]
+		Triage --> Bridge[MCP subprocess bridge]
+		Inventory --> Bridge
+		Compliance --> Bridge
+		Bridge --> ReadTools[Typed read-only MCP tools]
+	end
+
+	subgraph Authority[Deterministic authority path]
+		Web --> Policy[Identity, origin, approval, and expiry policy]
+		Policy --> Domain[Idempotent recall domain]
+		Domain --> State[(Actor-scoped Blob state<br/>with ETag concurrency)]
+		Domain --> Audit[Control and audit evidence]
+	end
+
+	Local[Local FastAPI demo] --> LocalTools[In-process MCP tools]
+	LocalTools --> Domain
+```
+
+The architecture separates **reasoning** from **authority**. The Hosted Agent receives only allow-listed read tools and produces a decision brief. It cannot approve or quarantine inventory. The web application validates identity and approval below the model, then deterministic domain code performs the state change and records evidence. Failures from MCP, the hosted endpoint, or concurrent state updates are bounded and surfaced without silently substituting an unverified result.
+
+## Engineering patterns demonstrated
+
+| Pattern | How Caldova demonstrates it |
+| --- | --- |
+| Sequential workflow | Triage, inventory impact, supplier/compliance, and supervisor stages run in a fixed dependency order. |
+| Multi-agent collaboration | Specialists have narrow responsibilities and tool allowlists; a tool-free supervisor synthesizes their accumulated evidence. |
+| Human in the loop | An authenticated, authorized person must approve quarantine; a button or model recommendation alone grants no authority. |
+| Effective MCP tools | Typed inputs, structured results, read-only/destructive annotations, schema validation, and policy checks below tool descriptions. |
+| Reliability and recovery | Timeouts, bounded concurrency, fail-closed hosted analysis, request-isolated workflows, idempotent replay, and Blob ETags. |
+| Observability and debugging | MCP inspection, structured errors, response correlation, workflow evidence, audit events, tests, and explicit reporting when hosted traces are unavailable. |
+| Security and governance | Least-capability tool exposure, EasyAuth identity, allowlists, origin checks, approval binding, managed identity, and synthetic data. |
+
+## Key takeaways
+
+- Understand where MCP fits in a modern agent architecture: it standardizes tool discovery and invocation, but does not replace authorization, workflow control, or domain policy.
+- Choose orchestration to match the workload. Prefer explicit sequencing for known dependencies; use supervisor routing only when dynamic delegation justifies its additional complexity.
+- Design narrow, typed MCP tools with structured failures and enforce consequential policy below the model-facing contract.
+- Make agent execution observable through correlation, tool evidence, audit records, tests, and truthful handling of missing telemetry.
+- Treat identity, security, governance, concurrency, and human approval as application responsibilities rather than prompt instructions.
+- Test failure and replay paths before calling an agent application production-ready; a successful happy-path demonstration is not sufficient evidence.
+
 ## Two execution paths
 
 - **Local Control Tower:** a browser UI and FastAPI service call MCP tools in process. Python builds the analysis summary and enforces approval and quarantine. No model or cloud account is needed.
