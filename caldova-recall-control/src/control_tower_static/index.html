@@ -21,9 +21,10 @@
       <span class="status-dot online"></span>
       <span><strong id="runtime-mode">LOCAL</strong><small>MCP <span id="protocol">2026-07-28</span></small></span>
       <span class="divider"></span>
-      <span class="router"><i data-lucide="route"></i><span><strong>MODEL ROUTER</strong><small id="model-name">caldova-model-router</small></span></span>
+      <span class="router"><i data-lucide="route"></i><span><strong id="execution-label">CONNECTING</strong><small id="model-name">Runtime unconfirmed</small></span></span>
     </div>
-    <button class="icon-button" id="reset-button" title="Reset demo" aria-label="Reset demo"><i data-lucide="rotate-ccw"></i></button>
+    <button class="icon-button" id="refresh-button" title="Refresh server state" aria-label="Refresh server state"><i data-lucide="refresh-cw"></i></button>
+    <button class="icon-button" id="reset-button" title="Reset demo" aria-label="Reset demo" disabled><i data-lucide="rotate-ccw"></i></button>
   </header>
 
   <main>
@@ -48,11 +49,12 @@
       <div class="metric"><small>LOCATIONS</small><strong id="location-count">--</strong><span>require action</span></div>
       <div class="metric"><small>SUPPLIER</small><strong id="supplier-state">--</strong><span id="replacement-eta">replacement status</span></div>
       <div class="command-actions">
-        <button class="button secondary" id="analysis-button"><i data-lucide="play"></i>Run analysis</button>
+        <button class="button secondary" id="analysis-button" disabled><i data-lucide="play"></i>Run analysis</button>
         <button class="button danger" id="approval-button" disabled><i data-lucide="shield-check"></i>Approve quarantine</button>
       </div>
     </section>
 
+    <p id="state-status" class="state-status" role="status" aria-live="polite"></p>
     <div class="workspace-grid">
       <section class="workspace-main">
         <div class="section-heading">
@@ -66,15 +68,28 @@
           </table>
         </div>
 
+        <section id="quarantine-evidence" class="quarantine-evidence" aria-labelledby="evidence-title" hidden>
+          <div class="section-heading"><div><small>OBSERVED RESULTS</small><h2 id="evidence-title">Quarantine evidence</h2></div></div>
+          <dl class="evidence-results">
+            <div><dt>First authorised call</dt><dd id="first-quarantine-result">Not recorded</dd></div>
+            <div><dt>Latest replay</dt><dd id="replay-quarantine-result">Not recorded</dd></div>
+          </dl>
+        </section>
+
         <div class="section-heading workflow-heading">
           <div><small>ORCHESTRATION</small><h2>Decision workflow</h2></div>
           <span class="correlation" id="correlation-id">NO ACTIVE RUN</span>
         </div>
         <ol class="workflow" id="workflow-list"></ol>
+        <p class="empty" id="workflow-empty" hidden>Hosted workflow trace unavailable.</p>
 
         <section class="brief" id="decision-brief" hidden>
           <div class="brief-heading"><i data-lucide="clipboard-check"></i><div><small>SUPERVISOR OUTPUT</small><h2>Decision brief</h2></div></div>
-          <div class="brief-grid">
+          <div id="hosted-answer" hidden>
+            <p id="hosted-response-id" class="response-id"></p>
+            <p id="hosted-text" class="hosted-text"></p>
+          </div>
+          <div class="brief-grid" id="brief-grid">
             <div><small>FACTS</small><p id="brief-facts"></p></div>
             <div><small>RECOMMENDATION</small><p id="brief-recommendation"></p></div>
             <div><small>UNCERTAINTY</small><p id="brief-uncertainty"></p></div>
@@ -109,11 +124,11 @@
         <strong>Quarantine <span id="dialog-units">2,196</span> units across <span id="dialog-locations">4</span> locations</strong>
         <small>Batch <span id="dialog-batch">B-2408-AX7</span></small>
       </div>
-      <label for="approver-name">Approver name and role</label>
+      <label id="approver-label" for="approver-name">Demo approver name (not authenticated)</label>
       <input id="approver-name" name="approver" minlength="3" maxlength="120" required placeholder="e.g. Asha Rao, Responsible Pharmacist" autocomplete="name">
       <div class="dialog-actions">
         <button class="button ghost" value="cancel" type="button" id="cancel-approval">Cancel</button>
-        <button class="button danger" value="approve" type="submit"><i data-lucide="shield-check"></i>Confirm approval</button>
+        <button class="button danger" value="approve" type="submit" id="confirm-approval" disabled><i data-lucide="shield-check"></i>Confirm approval</button>
       </div>
     </form>
   </dialog>

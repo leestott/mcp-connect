@@ -43,6 +43,14 @@ def build_evaluator() -> EvaluatorVersion:
         categories=["quality"],
         definition=PromptBasedEvaluatorDefinition(
             prompt_text=PROMPT_TEXT,
+            init_parameters={
+                "type": "object",
+                "properties": {
+                    "deployment_name": {"type": "string"},
+                    "threshold": {"type": "number"},
+                },
+                "required": ["deployment_name", "threshold"],
+            },
             data_schema={
                 "type": "object",
                 "properties": {

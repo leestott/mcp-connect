@@ -59,6 +59,7 @@ def main() -> None:
                 "initialization_parameters": {
                     "deployment_name": args.deployment,
                     "model": args.deployment,
+                    "threshold": 4,
                 },
                 "data_mapping": {
                     "query": "{{item.query}}",

@@ -12,6 +12,8 @@ mcp==2.1.0
 fastapi==0.141.1
 httpx==0.28.1
 uvicorn==0.52.4
+azure-identity==1.25.3
+azure-storage-blob==12.30.0
 
 # Test runner
 pytest==8.4.2

@@ -4,7 +4,7 @@ This preserves implementation history for [SPEC.md](SPEC.md). Checked cloud, eva
 
 ## Public-sharing follow-up
 
-- [x] Deploy the solution to a new Microsoft Foundry project named `leestott-mcpconnect`, using the account `authorised-deployment-identity`. Deployed 2026-09-14 in ai-team / North Central US after target, permissions, quota, and usage-charge review. Hosted agent version 1 is active; the read-only smoke test returned 2,196 units across four locations, and the final doctor check passed (11 passed, 0 failed). Evaluation and trace review remain separate follow-up work.
+- [x] Deploy the solution to a new Microsoft Foundry project named `leestott-mcpconnect`, using an authorised deployment identity. Deployed 2026-09-14 in the approved subscription and North Central US after target, permissions, quota, and usage-charge review. Hosted agent version 1 is active; the read-only smoke test returned 2,196 units across four locations, and the final doctor check passed (11 passed, 0 failed). Evaluation and trace review remain separate follow-up work.
 - [ ] Verify the hosted deployment, traces, and evaluation results afresh before presenting cloud evidence.
 - [ ] Complete a timed rehearsal using the speaker edition and updated runbook.
 - [ ] Add verified caller identity and durable transactional state before any production use.
@@ -14,6 +14,21 @@ This preserves implementation history for [SPEC.md](SPEC.md). Checked cloud, eva
 
 The complete presenter scenario must work from an HTTPS website without a local server, terminal, or developer credentials. A read-only online preview is an intermediate milestone, not completion of this requirement. Keep the existing local demonstration available as a fallback.
 
+### Progress checkpoint - 2026-09-15
+
+- [x] Implement and locally test the hosted Responses client, identity-bound approvals, isolated state, ETag writes, expiry, replay, reset invalidation, and failure handling. The focused API suite passed 55 tests; deployed identity and storage behavior remain unverified.
+- [x] Implement safe hosted response rendering, bounded state refresh, replay recovery, and authorization-aware UI controls. Simulated browser checks passed across nine widths (320-1440 pixels); these are not live-agent browser evidence.
+- [x] Create five reusable demo skills under [.github/skills](../.github/skills/); validate metadata and 41 local links.
+- [x] Run the integrated local suite: 89 tests passed. Dependency consistency, JavaScript syntax, working-tree/index hygiene, and direct-pin hosting/MCP audits passed. Later infrastructure/evaluation changes require final validation; full transitive audits and presentation rebuilds remain pending.
+- [x] Prepare separate [web infrastructure](../infra/web/main.bicep), [packaging/deployment helper](../infra/web/web.ps1), and [identity helper](../infra/web/identity.ps1), preserving the root Foundry lifecycle. Bicep compilation, script parsing, package checks, and clean Linux startup passed; local anonymous requests returned 401.
+- [ ] Unblock website deployment: ARM validation and what-if confirmed North Central US Linux B1 quota limit 0, usage 0, required 1. Resolve capacity through an approved quota request or separately approved target change, then rerun validation. Estimated web/storage cost is about $13.22/month, excluding agent usage; no higher-tier fallback was selected. No new website resources or Entra objects were created, and no deployed website URL exists.
+- [x] Retrieve the original evaluator-generation failure with the correct tenant and retain sanitized evidence. The original HTTP 400 cause remains unconfirmed. A controlled request using catalog model name `gpt-5.4-mini` returned `ResourceNotFound` at `inputs.model`, without creating a job.
+- [x] Set the generation/evaluation deployment to `caldova-evaluator` and repair reference-evaluator parameter mapping to explicitly retain the intended threshold 4. Improve result reporting for missing/empty outputs and invalid judges. Seven golden cases and rubric content are unchanged; no remote evaluator update or successful generation is claimed.
+- [ ] Restore verifiable execution, then submit one controlled generation request using the existing `caldova-evaluator` deployment alias. That authorized alias request was not submitted because execution tools stopped returning verifiable results. If it succeeds, separately verify the seven-case evaluation; do not report generation success as seven passing evaluations.
+- [ ] Finish final validation, documentation, and publication to the existing draft PR. Current implementation, evaluation, infrastructure, and skill changes remain local; a previous passing CI run does not validate this snapshot.
+
+### Online release gates
+
 - [ ] Deploy the frontend and API with reproducible infrastructure, restricted Entra sign-in, managed identity, least-privilege project access, and documented hosting costs.
 - [ ] Connect browser analysis through the backend to the live `leestott-mcpconnect` agent. Render its actual response safely and record agent version, response ID, and request correlation; never silently substitute local analysis.
 - [ ] Make recall inspection, analysis, named approval, quarantine, replay, audit, and authorized demo reset work entirely online with synthetic data.
@@ -22,6 +37,7 @@ The complete presenter scenario must work from an HTTPS website without a local 
 - [ ] Show truthful runtime and tool evidence, including loading, denied, empty, timeout, partial-failure, disconnected, and replay states. Do not fabricate specialist traces.
 - [ ] Resolve the hosted empty-response failures and invalid judge output without lowering grading criteria. Latest new-project baseline (2026-09-14, agent version 1): 3 passed / 4 failed / 0 reported platform errors across 7 cases; all four failed responses were empty and one judge result was nonnumeric.
 - [ ] Rerun all seven unchanged golden cases and inspect per-item responses, evaluator thresholds, and correlated traces before claiming evaluation success.
+- [ ] Investigate the separate `azd ai agent eval generate` failure reported on 2026-09-15 for `leestott-mcpconnect`, hosted agent `agent-framework-workflows-responses` version `1`. Generation used `.agent_configs/baseline/instructions.md`, deployed model `caldova-model-router`, and 15 samples. Job `evaluatorgen-agent-framework-workflows-responses-v3-a11c9ed9` failed after 50 seconds with HTTP 400: `The requested operation is unsupported.` Target resolution succeeded; the cause is not yet established. Inspect job diagnostics and verify evaluator-generation support for the selected model and API before retrying with a supported configuration. Preserve the existing eval configuration and seven golden cases; confirm successful evaluator generation separately from evaluation pass/fail results.
 - [ ] Validate authenticated desktop/mobile browser journeys against the deployed URL, including an actual live-agent response, denied anonymous access, denied unauthorized mutations, cross-session isolation, approval, quarantine, replay, and reset.
 - [ ] Record the deployed website URL, immutable agent version, deployment/rollback steps, evaluation evidence, and a complete online rehearsal in the README and runbook.
 - [ ] Publish repository changes through a reviewed PR in the private `leestott/mcp-connect` repository; exclude credentials, local environments, and private generated evidence.
@@ -37,7 +53,7 @@ The complete presenter scenario must work from an HTTPS website without a local 
 | G4 - Demo UI | Complete approval flow passes Playwright desktop/mobile checks | Complete |
 | G5 - Cloud | Foundry project, Model Router, Hosted Agent, traces, and evaluation are verified live | Complete (quality follow-up open) |
 | G6 - Session ready | Deck, runbook, fallback, and 25-minute rehearsal pass | In progress |
-| G7 - Complete online demo | Authenticated website runs the full scenario against the live agent with durable controls and verified end-to-end evidence | Not implemented |
+| G7 - Complete online demo | Authenticated website runs the full scenario against the live agent with durable controls and verified end-to-end evidence | Implemented locally; deployment blocked by B1 quota, live verification pending |
 
 ## Execution order
 
@@ -146,6 +162,7 @@ The complete presenter scenario must work from an HTTPS website without a local 
 ## 7. Presentation assets
 
 - [x] Create the PowerPoint decks with speaker notes (three Microsoft-branded decks: Demo 1 MCP/multi-agent, Demo 2 Foundry, Teams deployment).
+- [x] Create an overall solution architecture diagram and add it to the story deck immediately before the first demo slide.
 - [x] Keep presentation content to about 12 minutes and live demos to about 9 minutes.
 - [x] Reserve about 4 minutes for opening, transitions, questions, and close.
 - [x] Include architecture, MCP design, multi-agent pattern, security, observability, and production lessons.

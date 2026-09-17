@@ -36,8 +36,12 @@ __pycache__/
 /infra/main.json
 /caldova-control-tower-*.png
 **/presentation/renders/
+/caldova-recall-control/presentation/*.wav
 /caldova-recall-control/presentation/*.pptx
-!/caldova-recall-control/presentation/mcp-community-connect-bengaluru-speaker.pptx
+!/caldova-recall-control/presentation/mcp-community-connect-bengaluru-final.pptx
+/caldova-recall-control/presentation/*-speaker-notes*.md
+/caldova-recall-control/presentation/*-narration.md
+/caldova-recall-control/presentation/*-stage-script.md
 
 # Local deployment caches and nested tool-generated project copies
 **/.venv-foundry/

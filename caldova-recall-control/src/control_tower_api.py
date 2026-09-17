@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from pathlib import Path
+import os
 import sys
 from time import perf_counter
 from typing import Any
@@ -17,6 +19,7 @@ sys.path.insert(0, str(AGENT_SOURCE))
 
 from caldova_domain import STORE  # noqa: E402
 from caldova_mcp import mcp  # noqa: E402
+import online_control  # noqa: E402
 
 
 BATCH_ID = "B-2408-AX7"
@@ -56,8 +59,43 @@ class DemoRuntime:
 runtime = DemoRuntime()
 
 
-app = FastAPI(title="Caldova Recall Control Tower")
+@asynccontextmanager
+async def lifespan(application: FastAPI):
+    if not online_control.enabled():
+        yield
+        return
+    from azure.identity.aio import ManagedIdentityCredential
+    async with ManagedIdentityCredential(client_id=os.environ["AZURE_CLIENT_ID"]) as credential:
+        sessions = online_control.BlobSessions(credential)
+        application.state.online_sessions = sessions
+        async def hosted_analyze(correlation_id: str):
+            return await online_control.live_analysis(credential, correlation_id)
+        application.state.online_analyze = hosted_analyze
+        try:
+            yield
+        finally:
+            await sessions.close()
+
+
+app = FastAPI(title="Caldova Recall Control Tower", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+
+@app.middleware("http")
+async def protect_hosted_routes(request: Request, call_next):
+    response = None
+    if online_control.enabled():
+        from fastapi.responses import JSONResponse
+        try:
+            online_control.caller(request)
+        except HTTPException as error:
+            response = JSONResponse({"detail": error.detail}, status_code=error.status_code)
+    if response is None:
+        response = await call_next(request)
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Referrer-Policy"] = "same-origin"
+    return response
 
 
 def snapshot() -> dict[str, Any]:
@@ -113,12 +151,16 @@ async def favicon() -> Response:
 
 
 @app.get("/api/state")
-async def get_state() -> dict[str, Any]:
+async def get_state(request: Request) -> dict[str, Any]:
+    if online_control.enabled():
+        return await online_control.execute(request, "state")
     return snapshot()
 
 
 @app.post("/api/analysis")
 async def run_analysis(request: Request) -> dict[str, Any]:
+    if online_control.enabled():
+        return await online_control.execute(request, "analysis")
     runtime.calls.clear()
     runtime.workflow = [{**stage, "status": "pending"} for stage in STAGES]
     runtime.correlation_id = uuid4().hex
@@ -153,6 +195,8 @@ async def run_analysis(request: Request) -> dict[str, Any]:
 
 @app.post("/api/approval")
 async def request_approval(body: ApprovalRequest, request: Request) -> dict[str, Any]:
+    if online_control.enabled():
+        return await online_control.execute(request, "approval")
     runtime.correlation_id = runtime.correlation_id or uuid4().hex
     result = await invoke(
         request,
@@ -172,6 +216,8 @@ async def request_approval(body: ApprovalRequest, request: Request) -> dict[str,
 
 @app.post("/api/quarantine")
 async def quarantine(body: QuarantineRequest, request: Request) -> dict[str, Any]:
+    if online_control.enabled():
+        return await online_control.execute(request, "quarantine", body.approval_id)
     token = runtime.approvals.get(body.approval_id)
     if token is None:
         raise HTTPException(status_code=403, detail="Valid named approval is required")
@@ -185,6 +231,8 @@ async def quarantine(body: QuarantineRequest, request: Request) -> dict[str, Any
 
 @app.post("/api/reset")
 async def reset(request: Request) -> dict[str, Any]:
+    if online_control.enabled():
+        return await online_control.execute(request, "reset")
     runtime.correlation_id = uuid4().hex
     await invoke(request, "reset_demo", {})
     runtime.reset()

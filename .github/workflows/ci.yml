@@ -42,6 +42,7 @@ jobs:
           python build_deck.py
           python build_teams_deck.py
           python build_event_deck.py
+            python build_story_deck.py
 
       - name: Check public repository files
         run: python scripts/check_repository.py

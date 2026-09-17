@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": { "value": "northcentralus" },
+    "webAppName": { "value": "replace-with-unique-web-name" },
+    "storageAccountName": { "value": "replacewithuniquestorage" },
+    "authClientId": { "value": "00000000-0000-0000-0000-000000000000" },
+    "tenantId": { "value": "00000000-0000-0000-0000-000000000000" },
+    "allowedUserIds": { "value": ["00000000-0000-0000-0000-000000000000"] },
+    "approverIds": { "value": ["00000000-0000-0000-0000-000000000000"] },
+    "foundryAccountName": { "value": "replace-with-existing-account" },
+    "foundryProjectName": { "value": "replace-with-existing-project" },
+    "agentEndpoint": { "value": "https://replace.services.ai.azure.com/api/projects/replace/agents/replace/endpoint/protocols/openai/responses" },
+    "modelDeploymentName": { "value": "caldova-model-router" },
+    "planSku": { "value": "B1" }
+  }
+}

@@ -1,9 +1,50 @@
 # Caldova 25-Minute Presenter Runbook
 
-## Recommended event deck
+## Story-led edition
 
-Use [mcp-community-connect-bengaluru-speaker.pptx](mcp-community-connect-bengaluru-speaker.pptx)
-for **From Prototype to Production: Engineering Agent Systems with MCP,
+For the problem -> decision -> demonstration -> evidence -> lesson presentation, use
+[the final deck](mcp-community-connect-bengaluru-final.pptx) and its
+[stage script](mcp-community-connect-bengaluru-story-stage-script.md).
+It has 18 main slides, six hidden appendices, and a hidden Demo Index (slide 25), with Asha's synthetic recall decision
+as the narrative. The script is also embedded in PowerPoint Presenter View.
+Visible slide 4 is the application architecture diagram, immediately before `DEMO 01` on slide 5.
+The timed sequence includes this architecture introduction before the first demonstration
+and five full-slide breaks labelled DEMO for deliberate terminal and browser handoffs.
+
+Budget 22 minutes including demonstrations and three minutes for actual audience questions.
+The script contains the new timing checkpoints, observations to verify, and honest fallbacks;
+the original-edition schedule below does not apply to the story deck. Live timing remains
+to be rehearsed. Supervisor routing and parallelism are comparisons, not live implementations.
+
+Build from the repository root without overwriting the original edition:
+
+```powershell
+.\caldova-recall-control\.venv\Scripts\python.exe .\caldova-recall-control\presentation\build_story_deck.py
+```
+
+### Demo navigation and rehearsal
+
+Use the story edition for the current event rehearsal. Main slides 2-18 link to the hidden
+Demo Index; its five entries return to the labelled demo break slides. Demo breaks 1 and 3
+cue a manual switch to the prepared MCP terminal; breaks 2, 4 and 5 cue the authenticated
+hosted Control Tower. There are no executable links or unverified hosted URLs in the deck.
+
+- Close the final deck in PowerPoint before rebuilding it, then reopen it in Presenter View.
+- Rehearse the terminal inspection once; keep its valid read and failure output available.
+- Use a dedicated local demo instance and reset only your own synthetic scenario before presenting.
+- Confirm the local header says LOCAL / NO MODEL and the approval field identifies a demo name.
+- On slide 8, inspect the first recorded quarantine result. On slide 9, replay and compare
+	First authorised call with Latest replay in Quarantine evidence. Values come from the
+	current batch's audit records, not expected counts. Not recorded means evidence is absent.
+- Keep hosted execution separate. Prepare authorised access and genuine dated/versioned
+	evidence, or use the stage script's labelled source fallback after 30 seconds without useful output.
+- Rehearse the actual window switches: stock by 5:00, hosted brief by 9:00, failure lab by
+	13:00, approval by 16:00, replay by 17:00, and questions from 22:00 to 25:00.
+
+## Original speaker edition (reference)
+
+The original [mcp-community-connect-bengaluru-speaker.pptx](mcp-community-connect-bengaluru-speaker.pptx)
+was prepared for **From Prototype to Production: Engineering Agent Systems with MCP,
 Multi-Agent Patterns and Real Work**, 11:00-11:25 IST on 26 September 2026.
 It contains 14 main slides and four hidden appendices: clickable sources, MCP roles and
 primitives, server/client code, and failure handling. Extensive Presenter View notes are
@@ -49,6 +90,9 @@ as possible extensions. The hosted application registers explicit wrappers; it d
 dynamically register every tool discovered from the server.
 
 ## Before the session
+
+This checklist and the schedule below belong to the original speaker edition. For the
+current story deck, use Demo navigation and rehearsal above and the story stage script.
 
 - Open the speaker edition in PowerPoint and enable Presenter View.
 - Start the Control Tower on `http://127.0.0.1:8091` and reset the scenario.

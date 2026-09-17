@@ -1,0 +1,2 @@
+-r requirements-ui.txt
+azure-storage-blob[aio]==12.30.0

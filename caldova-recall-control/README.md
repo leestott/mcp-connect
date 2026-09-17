@@ -6,7 +6,7 @@ The application supports the 25-minute session **From Prototype to Production: E
 
 The hosted agents use the deployment configured by `AZURE_AI_MODEL_DEPLOYMENT_NAME`. The repository includes Model Router configuration, but you must verify model availability, cost, identity permissions, and actual routing behavior in your own environment.
 
-> A clone contains source and configuration, not a live cloud deployment. [SPEC.md](SPEC.md) records design targets and [TODO.md](TODO.md) preserves development history, not fresh verification. Use [presentation/RUNBOOK.md](presentation/RUNBOOK.md) and the speaker edition for the current presentation.
+> A clone contains source and configuration, not a live cloud deployment. [SPEC.md](SPEC.md) records design targets and [TODO.md](TODO.md) preserves development history, not fresh verification. Use [presentation/RUNBOOK.md](presentation/RUNBOOK.md) and the final story-led edition for the current presentation.
 
 ## Demo story
 
@@ -87,30 +87,50 @@ The Hosted Agent delegates its three read-only tools through [mcp_v2_bridge.py](
 
 ## Run the local Control Tower
 
-The command below must run from the `caldova-recall-control` directory (the `.\.venv` and `.\src` paths are relative to it). From the repository root, change into it first:
+You can run each complete PowerShell block below from anywhere inside this Git clone, including either scripts folder. Its first line changes to the repository root before using repository-relative paths. Include that line when copying commands. Git must be installed.
+
+The repository root is the parent of this application directory and contains both `caldova-recall-control/` and `scripts/`. Use `Get-Location` to check your current folder. Press Ctrl+C first if the input line already contains text.
+
+Install Python 3.13 with the Windows Python launcher (`py`). Create the environment only on first setup; reuse an existing Python 3.13 environment.
 
 ```powershell
-cd caldova-recall-control
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-ui.txt
-.\.venv\Scripts\python.exe -m uvicorn control_tower_api:app --app-dir .\src --host 127.0.0.1 --port 8091
+Set-Location (git rev-parse --show-toplevel)
+py -3.13 -m venv caldova-recall-control/.venv
+./caldova-recall-control/.venv/Scripts/python.exe -m pip install -r caldova-recall-control/requirements-ui.txt
 ```
 
-Prefer to stay at the repository root? Use full paths instead:
+Start the server in its own terminal after setup:
 
 ```powershell
-.\caldova-recall-control\.venv\Scripts\python.exe -m uvicorn control_tower_api:app --app-dir .\caldova-recall-control\src --host 127.0.0.1 --port 8091
+Set-Location (git rev-parse --show-toplevel)
+./caldova-recall-control/.venv/Scripts/python.exe -m uvicorn control_tower_api:app --app-dir caldova-recall-control/src --host 127.0.0.1 --port 8091
 ```
 
-> If you see `Error loading ASGI app. Could not import module "control_tower_api"`, you are running from the wrong directory — `--app-dir` is not pointing at `caldova-recall-control\src`. Use one of the two forms above.
+On macOS/Linux, replace the first line with `cd "$(git rev-parse --show-toplevel)"`, create the environment with `python3.13 -m venv caldova-recall-control/.venv`, and use `./caldova-recall-control/.venv/bin/python` instead of the Windows executable path.
 
-Use Python 3.13. On macOS/Linux, substitute `.venv/bin/python` for the Windows executable path. Open [http://127.0.0.1:8091](http://127.0.0.1:8091). Run analysis, then select **Approve quarantine** and enter a synthetic approver name. Submitting the dialog both approves and quarantines. Use **Replay quarantine** to confirm no additional inventory changes. The **Run Caldova Control Tower** VS Code task starts the same service after dependencies are installed.
+If Python or the script cannot be found, first check the current directory. For `Could not import module "control_tower_api"`, check that `--app-dir` points to the application's `src` directory and that dependencies were installed in the selected environment.
 
-Run all local tests from the `caldova-recall-control` directory with:
+Open [http://127.0.0.1:8091](http://127.0.0.1:8091). Run analysis, then select **Approve quarantine** and enter a synthetic approver name. Submitting the dialog both approves and quarantines. Use **Replay quarantine** to confirm no additional inventory changes. The **Run Caldova Control Tower** VS Code task starts the same service after dependencies are installed.
+
+### Inspect MCP over stdio
+
+After installing the local dependencies above, run the [inspection script](scripts/inspect_mcp.py) from the repository root. Use a separate terminal if the Control Tower is running, and check that terminal's working directory too.
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements-test.txt
-.\.venv\Scripts\python.exe -m pytest .\tests -q
+Set-Location (git rev-parse --show-toplevel)
+./caldova-recall-control/.venv/Scripts/python.exe caldova-recall-control/scripts/inspect_mcp.py
+```
+
+The script is in the application's scripts folder, not the top-level `scripts/` folder. It shows MCP discovery and schemas, reads 2,196 units across four locations, rejects malformed input and an unapproved mutation, and verifies unchanged inventory. It uses independent synthetic state, makes no model or cloud calls, and does not change the browser's state.
+
+### Validate locally
+
+Run all local tests from the repository root, in a separate terminal if the server is running:
+
+```powershell
+Set-Location (git rev-parse --show-toplevel)
+./caldova-recall-control/.venv/Scripts/python.exe -m pip install -r caldova-recall-control/requirements-test.txt
+./caldova-recall-control/.venv/Scripts/python.exe -m pytest caldova-recall-control/tests -q
 ```
 
 ## Option 1: Azure Developer CLI (`azd`)
@@ -202,7 +222,7 @@ azd ai agent invoke "Assess recall batch B-2408-AX7, report affected stock and s
 
 Use the [Foundry Toolkit](https://marketplace.visualstudio.com/items?itemName=ms-windows-ai-studio.windows-ai-studio) for hosted-agent development. Keep its hosting environment separate from MCP v2 dependencies, as the [Dockerfile](src/agent-framework-workflows-responses/Dockerfile) does. Debugging the hosted workflow is not the same as starting the local Control Tower task.
 
-Use the [event speaker deck](presentation/mcp-community-connect-bengaluru-speaker.pptx) and [runbook](presentation/RUNBOOK.md). Other deck generators remain reference material; their generated drafts are ignored and may contain older deployment or timing claims.
+Use the [detailed demo guide](demo.md), [final story-led deck](presentation/mcp-community-connect-bengaluru-final.pptx), and [presenter runbook](presentation/RUNBOOK.md) for the current presentation. The overall solution architecture is visible slide 4, immediately before `DEMO 01`. Other deck generators remain reference material and may contain older deployment or timing claims.
 
 ## Next steps
 
