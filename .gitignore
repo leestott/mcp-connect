@@ -36,6 +36,7 @@ __pycache__/
 /infra/main.json
 /caldova-control-tower-*.png
 **/presentation/renders/
+/caldova-recall-control/presentation/**/*.py
 /caldova-recall-control/presentation/*.wav
 /caldova-recall-control/presentation/*.pptx
 !/caldova-recall-control/presentation/mcp-community-connect-bengaluru-final.pptx
