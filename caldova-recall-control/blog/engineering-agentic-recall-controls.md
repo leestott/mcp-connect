@@ -28,23 +28,9 @@ Quarantine changes operational state. It therefore needs an authenticated human,
 
 The solution has two related but deliberately separate paths.
 
-```mermaid
-flowchart TB
-    User[Authenticated operator] --> Web[App Service: FastAPI and Control Tower]
-    Web -->|read-only assessment| Responses[Foundry Hosted Agent: Responses protocol]
-    Responses --> Triage[Recall triage agent]
-    Triage --> Inventory[Inventory impact agent]
-    Inventory --> Compliance[Supplier and compliance agent]
-    Compliance --> Supervisor[Tool-free supervisor]
-    Triage --> Bridge[MCP subprocess bridge]
-    Inventory --> Bridge
-    Compliance --> Bridge
-    Bridge --> Tools[Read-only typed MCP tools]
+![Caldova architecture separating a read-only Foundry Agent reasoning path from the human-authorized deterministic action path](assets/caldova-agent-architecture.png)
 
-    Web -->|approval and quarantine| Policy[Deterministic policy layer]
-    Policy --> State[(Actor-scoped Blob state with ETags)]
-    Policy --> Domain[Idempotent recall domain]
-```
+*Caldova separates model reasoning from application authority. Official Microsoft service icons identify Foundry Agent Service, App Service, Managed Identity, and Blob Storage.*
 
 The **reasoning path** invokes a Hosted Agent through the Responses protocol. Four agents run in a fixed sequence: triage, inventory impact, supplier/compliance, and supervisor. The first three have narrow read-only tools. The supervisor has no tools and synthesizes the accumulated context into a decision brief.
 
