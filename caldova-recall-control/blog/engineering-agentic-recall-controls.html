@@ -29,20 +29,10 @@
 
     <p>The solution has two related but deliberately separate paths.</p>
 
-    <pre><code>Authenticated operator
-  |
-  v
-App Service: FastAPI and Control Tower
-  |-- read-only assessment --&gt; Foundry Hosted Agent (Responses)
-  |                            Triage -&gt; Inventory -&gt; Compliance -&gt; Supervisor
-  |                                  \       |          /
-  |                                   MCP subprocess bridge
-  |                                           |
-  |                                   Read-only typed tools
-  |
-  +-- approval and quarantine --&gt; Deterministic policy layer
-                                  |-- Actor-scoped Blob state with ETags
-                                  +-- Idempotent recall domain</code></pre>
+    <figure>
+      <img src="assets/caldova-agent-architecture.png" alt="Caldova architecture separating a read-only Foundry Agent reasoning path from the human-authorized deterministic action path">
+      <figcaption>Caldova separates model reasoning from application authority. Official Microsoft service icons identify Foundry Agent Service, App Service, Managed Identity, and Blob Storage.</figcaption>
+    </figure>
 
     <p>The <strong>reasoning path</strong> invokes a Hosted Agent through the Responses protocol. Four agents run in a fixed sequence: triage, inventory impact, supplier/compliance, and supervisor. The first three have narrow read-only tools. The supervisor has no tools and synthesizes the accumulated context into a decision brief.</p>
 

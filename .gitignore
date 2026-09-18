@@ -39,6 +39,7 @@ __pycache__/
 /caldova-recall-control/presentation/*.wav
 /caldova-recall-control/presentation/*.pptx
 !/caldova-recall-control/presentation/mcp-community-connect-bengaluru-final.pptx
+!/caldova-recall-control/presentation/MCP_Community_Connect_Bengaluru_Final_Branded.pptx
 /caldova-recall-control/presentation/*-speaker-notes*.md
 /caldova-recall-control/presentation/*-narration.md
 /caldova-recall-control/presentation/*-stage-script.md
