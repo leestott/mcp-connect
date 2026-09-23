@@ -1,6 +1,46 @@
 const state = { data: null, approvalId: null, busy: false, pending: false, refreshing: false, stale: true, approvalBlocked: false, refreshTimer: null, monitoringStarted: null };
 
 const $ = (id) => document.getElementById(id);
+const themePreference = window.matchMedia("(prefers-color-scheme: dark)");
+
+function updateThemeButton() {
+  const dark = document.documentElement.dataset.theme === "dark"
+    || (!document.documentElement.dataset.theme && themePreference.matches);
+  const label = `Switch to ${dark ? "light" : "dark"} theme`;
+  $("theme-button").setAttribute("aria-label", label);
+  $("theme-button").title = label;
+  $("theme-button").innerHTML = `<i data-lucide="${dark ? "sun" : "moon"}"></i>`;
+  if (window.lucide) window.lucide.createIcons();
+}
+
+try {
+  const savedTheme = localStorage.getItem("caldova-theme");
+  if (savedTheme === "light" || savedTheme === "dark") document.documentElement.dataset.theme = savedTheme;
+} catch (error) {
+  console.warn("Theme preference could not be loaded; using system preference.", error);
+}
+updateThemeButton();
+themePreference.addEventListener("change", updateThemeButton);
+window.addEventListener("storage", (event) => {
+  if (event.key !== "caldova-theme" && event.key !== null) return;
+  if (event.newValue === "light" || event.newValue === "dark") document.documentElement.dataset.theme = event.newValue;
+  else delete document.documentElement.dataset.theme;
+  updateThemeButton();
+});
+$("theme-button").addEventListener("click", () => {
+  const dark = document.documentElement.dataset.theme === "dark"
+    || (!document.documentElement.dataset.theme && themePreference.matches);
+  const next = dark ? "light" : "dark";
+  document.documentElement.dataset.theme = next;
+  updateThemeButton();
+  try {
+    localStorage.setItem("caldova-theme", next);
+  } catch (error) {
+    console.warn("Theme preference could not be saved for future visits.", error);
+    toast("Theme changed for this visit, but the preference could not be saved.", true);
+  }
+});
+
 const formatNumber = (value) => new Intl.NumberFormat("en-IN").format(value ?? 0);
 const escapeHtml = (value) => String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
 const safeJson = (value) => escapeHtml(JSON.stringify(value));

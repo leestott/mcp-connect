@@ -101,6 +101,8 @@ On macOS/Linux, replace the first line with `cd "$(git rev-parse --show-toplevel
 
 Open [the Control Tower](http://127.0.0.1:8091), run analysis, approve quarantine, then replay it to confirm no additional stock changes. Keep the service on localhost: an entered approver name is not authenticated identity, and all state is in memory.
 
+The Control Tower follows the browser's light/dark system preference until you use the theme button in the top bar. Your choice is saved in this browser and does not affect recall state or other users.
+
 ### Inspect MCP over stdio
 
 After installing the local dependencies above, run the [inspection script](caldova-recall-control/scripts/inspect_mcp.py) from the repository root. Use a separate terminal if the Control Tower is running, and check that terminal's working directory too.
