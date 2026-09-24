@@ -227,6 +227,77 @@ From the repository root, after following the [local setup instructions](../READ
 ./caldova-recall-control/.venv/Scripts/python.exe -m pytest caldova-recall-control/tests -q
 ```
 
+### Presenter terminal controller
+
+For a stage-safe terminal workflow, run **Terminal: Run Task** in VS Code and select
+`Caldova: Run guided presentation`. Start `Run Caldova Control Tower` first.
+The guided runner presents the cues in deck order, shows each timing checkpoint and
+surface, and waits for an explicit Enter before changing state. It supports skip,
+repeat and quit without silently advancing. The numbered `Caldova:` tasks remain
+available when an individual cue needs to be run directly.
+
+The shortest fixed terminal commands are:
+
+```text
+scripts\caldova-demo show
+scripts\caldova-demo preflight
+scripts\caldova-demo prepare
+scripts\caldova-demo demo1
+scripts\caldova-demo demo2
+scripts\caldova-demo demo3
+scripts\caldova-demo demo4
+scripts\caldova-demo demo5
+scripts\caldova-demo reset
+```
+
+`show` is the normal stage path. `demo5` performs the replay and then displays the
+audit comparison. The guided runner preserves the quarantined state after its final
+cue for questions; run `reset` only after the session. At every checkpoint the runner
+runs and validates the cue, preserves its raw terminal output in scrollback, then
+prints a **SUMMARY** explanation immediately below the evidence. It does not clear
+the terminal between checkpoints. Pre-show checks retain backstage operator notes so
+they are not accidentally presented as part of the audience demo.
+
+The same cues can be run directly from the repository root:
+
+```powershell
+./scripts/present_caldova_demo.ps1 preflight
+./scripts/present_caldova_demo.ps1 inspect
+./scripts/present_caldova_demo.ps1 analysis
+./scripts/present_caldova_demo.ps1 deny
+./scripts/present_caldova_demo.ps1 approve
+./scripts/present_caldova_demo.ps1 replay
+./scripts/present_caldova_demo.ps1 audit
+./scripts/present_caldova_demo.ps1 reset
+```
+
+Each cue validates its expected response and exits with an error if the evidence
+does not match the runbook. The approval cue uses the synthetic presenter name
+and stores only its opaque replay handle in a temporary local file. The reset cue
+removes that handle. These tasks operate only against the localhost Control Tower;
+they do not invoke the hosted workflow.
+
+### Prepared live terminal/browser runner
+
+After an authenticated HTTPS website is deployed and verified, use:
+
+```powershell
+scripts\caldova-demo live https://your-deployed-host.example
+```
+
+or run the VS Code task `Caldova: Run live terminal/browser presentation`.
+The live runner keeps the real MCP stdio inspection in the terminal, opens the
+authenticated website, and pauses for explicit visible-evidence confirmation at
+each browser checkpoint. It never sends EasyAuth-protected approval or mutation
+requests from the terminal, never fabricates platform identity headers, and offers
+the labelled hosted source fallback when useful output is unavailable.
+
+This runner is prepared control flow, not proof of a deployment. Before using it
+on stage, verify the website URL, restricted Entra sign-in, authorized approver,
+durable state, live nonempty agent response and correlation IDs, first mutation,
+zero-change replay, audit, reset, and anonymous/unauthorized denial. Without that
+evidence, use the local `show` runner or the runbook's source fallback.
+
 PowerShell 7 denial request, while the local server is running:
 
 ```powershell

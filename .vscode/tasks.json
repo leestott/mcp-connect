@@ -74,7 +74,7 @@
 		{
 			"label": "Run Caldova Control Tower",
 			"type": "process",
-			"command": "${command:python.interpreterPath}",
+			"command": "${workspaceFolder}/caldova-recall-control/.venv/Scripts/python.exe",
 			"args": [
 				"-m",
 				"uvicorn",
@@ -104,6 +104,212 @@
 					"beginsPattern": ".*",
 					"endsPattern": "Uvicorn running on"
 				}
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": false,
+				"clear": true
+			}
+		},
+		{
+			"label": "Caldova: Presentation Preflight",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/present_caldova_demo.ps1",
+				"preflight"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "Caldova: DEMO 01 - MCP inspection",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/present_caldova_demo.ps1",
+				"inspect"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "Caldova: DEMO 02 - Run analysis",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/present_caldova_demo.ps1",
+				"analysis"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "Caldova: DEMO 03 - Denied write",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/present_caldova_demo.ps1",
+				"deny"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "Caldova: DEMO 04 - Approve and quarantine",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/present_caldova_demo.ps1",
+				"approve"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "Caldova: DEMO 05 - Replay",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/present_caldova_demo.ps1",
+				"replay"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "Caldova: Show audit evidence",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/present_caldova_demo.ps1",
+				"audit"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "Caldova: Reset presentation demo",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/present_caldova_demo.ps1",
+				"reset"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "Caldova: Run guided presentation",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/run_caldova_presentation.ps1"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "Caldova: Run live terminal/browser presentation",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/run_caldova_live_presentation.ps1",
+				"-WebUrl",
+				"${input:caldovaLiveWebUrl}"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true,
+				"clear": true
 			}
 		}
 	],
@@ -122,6 +328,11 @@
 			"type": "command",
 			"command": "workbench.action.tasks.terminate",
 			"args": "terminateAll"
+		},
+		{
+			"id": "caldovaLiveWebUrl",
+			"type": "promptString",
+			"description": "Authenticated Caldova HTTPS website URL"
 		}
 	]
 }
