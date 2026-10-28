@@ -22,6 +22,16 @@ def test_control_tower_task_uses_selected_interpreter_and_localhost() -> None:
     assert task["options"]["cwd"] == "${workspaceFolder}/caldova-recall-control"
 
 
+def test_web_deployment_uses_current_validation_plan_contract() -> None:
+    script = (ROOT / "infra" / "web" / "web.ps1").read_text(encoding="utf-8")
+    assert ".azure/plan.md" in script
+    assert ".azure/deployment-plan.md" not in script
+    assert ".azure/validate-status.json" not in script
+    assert "Status:" in script and "Validated" in script
+    assert "'--async', 'true'" in script
+    assert "Verify Kudu build completion" in script
+
+
 @pytest.mark.parametrize(
     "name",
     [

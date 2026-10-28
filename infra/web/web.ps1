@@ -103,9 +103,7 @@ if ($Action -eq 'Preview') {
     return
 }
 if (-not $ApprovedDeployment) { throw 'Explicit cost and deployment consent is required; pass ApprovedDeployment only after consent.' }
-$status = Get-Content -LiteralPath (Join-Path $root '.azure/validate-status.json') -Raw | ConvertFrom-Json
-if ($status.completedStep -ne 'UpdateStatus') { throw 'Complete the azure-validate workflow for the web artifacts first.' }
-$plan = Get-Content -LiteralPath (Join-Path $root '.azure/deployment-plan.md') -Raw
+$plan = Get-Content -LiteralPath (Join-Path $root '.azure/plan.md') -Raw
 $activeWebPlan = ($plan -split '(?m)^---\s*$', 2)[0]
 if ($activeWebPlan -notmatch '(?m)^\*\*Status:\*\* Validated') { throw 'The active web plan must be Validated, not a historical Foundry plan.' }
 if ($Action -eq 'Provision') {
@@ -124,5 +122,5 @@ $identityDifference = @(Compare-Object -ReferenceObject @($parameters.parameters
 if ($identityDifference.Count) { throw 'Deployed EasyAuth caller allowlist differs from the approved parameters.' }
 $packageResults = @(New-WebPackage)
 $zip = $packageResults[-1]
-Invoke-Azure @('webapp', 'deploy', '--subscription', $SubscriptionId, '--resource-group', $ResourceGroup, '--name', $WebAppName, '--src-path', $zip, '--type', 'zip', '--track-status', 'false', '--output', 'none')
-Write-Output 'Code upload completed. Authenticated browser and live-agent verification are still required.'
+Invoke-Azure @('webapp', 'deploy', '--subscription', $SubscriptionId, '--resource-group', $ResourceGroup, '--name', $WebAppName, '--src-path', $zip, '--type', 'zip', '--async', 'true', '--track-status', 'false', '--output', 'none')
+Write-Output 'Code deployment submitted. Verify Kudu build completion, then authenticated browser and live-agent behavior.'

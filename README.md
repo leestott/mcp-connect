@@ -139,7 +139,7 @@ CI runs local tests, deck builds, repository hygiene checks, and dependency audi
 | --- | --- |
 | [caldova-recall-control/](caldova-recall-control/README.md) | The application, MCP server, Hosted Agent workflow, Control Tower UI, tests, and presentation |
 | [Presenter runbook](caldova-recall-control/presentation/RUNBOOK.md) | Event speaker deck, timings, rebuild commands, and demo limitations |
-| [infra/](infra/) | Bicep infrastructure for the Foundry project, Model Router, ACR, and observability |
+| [infra/](infra/) | Legacy exported Foundry Bicep and the separate web infrastructure; the root manifest uses the current Foundry provider templates |
 | [scripts/setup_azd_env.py](scripts/setup_azd_env.py) | Idempotent azd environment bootstrap (detects the principal, sets non-secret values) |
 | [azure.yaml](azure.yaml) | Canonical azd manifest that owns the infrastructure and the Hosted Agent lifecycle |
 | [scripts/check_repository.py](scripts/check_repository.py) | Redacting checks for public file candidates and staged contents |
