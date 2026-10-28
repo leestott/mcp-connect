@@ -56,3 +56,4 @@ services:
                 name: GlobalStandard
 infra:
     provider: microsoft.foundry
+    path: infra/foundry

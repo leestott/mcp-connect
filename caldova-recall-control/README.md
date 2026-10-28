@@ -165,6 +165,25 @@ All generated azd values remain under `.azure/` and must not be committed. The a
 
 Do not rerun `azd ai agent init`; this repository is already initialized and regenerating it could overwrite the application or infrastructure.
 
+The root manifest points the Foundry provider at `infra/foundry`. Until current
+templates are explicitly exported there, provisioning uses the installed
+provider's built-in templates. The older `infra/main.bicep` export is retained
+for reference, but is not used: its generic connection provisioning contract
+is incompatible with current Foundry CLI versions. The separate `infra/web`
+templates still own the authenticated website.
+
+The web deployment helper requires an approved `.azure/plan.md` marked
+`Validated` by the Azure validation workflow. Its infrastructure creates
+Application Insights, a Log Analytics workspace, and App Service diagnostic
+log routing. These resources do not by themselves prove that hosted-agent
+traces or application-level instrumentation are available.
+If managed-identity provisioning is unavailable in the chosen region, the web
+template's optional `identityLocation` parameter can place only that identity
+in a separately approved region; it defaults to the application's region.
+Publishing submits an asynchronous ZIP deployment so a long Oryx dependency
+build does not exceed the HTTP gateway timeout. Verify that the deployment
+finishes successfully in Kudu before checking sign-in and the live agent.
+
 ### Refresh production dependency locks
 
 The Docker image installs hash-pinned `requirements.lock` and `requirements-mcp.lock` files. Because these locks target the Linux container, regenerate them inside the same `python:3.13-slim` base image so host-specific packages are never pinned. Run this from `caldova-recall-control/src/agent-framework-workflows-responses` whenever either source requirements file changes:

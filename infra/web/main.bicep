@@ -1,6 +1,7 @@
 targetScope = 'resourceGroup'
 
 param location string = 'northcentralus'
+param identityLocation string = location
 @minLength(3)
 @maxLength(40)
 param webAppName string
@@ -31,9 +32,28 @@ var origin = 'https://${webAppName}.azurewebsites.net'
 var foundryUserRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '53ca6127-db72-4b80-b1b0-d745d6d5456d')
 var blobContributorRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
 
+module logs '../core/monitor/loganalytics.bicep' = {
+  name: 'web-log-analytics'
+  params: {
+    name: '${webAppName}-logs'
+    location: location
+    tags: tags
+  }
+}
+
+module insights '../core/monitor/applicationinsights.bicep' = {
+  name: 'web-application-insights'
+  params: {
+    name: '${webAppName}-insights'
+    location: location
+    tags: tags
+    logAnalyticsWorkspaceId: logs.outputs.id
+  }
+}
+
 resource webIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: '${webAppName}-identity'
-  location: location
+  location: identityLocation
   tags: tags
 }
 
@@ -207,9 +227,26 @@ resource ftpPublishing 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2
   properties: { allow: false }
 }
 
+resource diagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: 'control-tower'
+  scope: web
+  properties: {
+    workspaceId: logs.outputs.id
+    logs: [
+      { category: 'AppServiceHTTPLogs', enabled: true }
+      { category: 'AppServiceConsoleLogs', enabled: true }
+      { category: 'AppServiceAppLogs', enabled: true }
+      { category: 'AppServicePlatformLogs', enabled: true }
+    ]
+    metrics: [{ category: 'AllMetrics', enabled: true }]
+  }
+}
+
 output webUrl string = origin
 output webAppResourceId string = web.id
 output identityClientId string = webIdentity.properties.clientId
 output identityPrincipalId string = webIdentity.properties.principalId
 output redirectUri string = '${origin}/.auth/login/aad/callback'
 output stateContainerUrl string = '${storage.properties.primaryEndpoints.blob}${sessions.name}'
+output applicationInsightsResourceId string = insights.outputs.id
+output logAnalyticsResourceId string = logs.outputs.id
